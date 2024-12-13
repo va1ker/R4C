@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from robots.views import GetReportView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('report/', GetReportView.as_view())
 ]
