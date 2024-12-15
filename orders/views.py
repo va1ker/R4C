@@ -17,21 +17,15 @@ class OrderView(FormView):
 
     def form_valid(self, form):
         with transaction.atomic():
-            customer = customer_selectors.get_or_create_user_by_email(
-                email=form.cleaned_data["email"]
-            )
+            customer = customer_selectors.get_or_create_user_by_email(email=form.cleaned_data["email"])
             robot_serial = form.cleaned_data["robot_serial"]
             if robot_selectors.is_robot_exists(serial=robot_serial):
                 order_services.create_order(customer=customer, serial=robot_serial)
                 transaction.on_commit(
-                    lambda: order_tasks.send_order_created_email.delay(
-                        email=customer.email, serial=robot_serial
-                    )
+                    lambda: order_tasks.send_order_created_email.delay(email=customer.email, serial=robot_serial)
                 )
             else:
-                wishlist_services.create_wishlist_item(
-                    customer=customer, serial=robot_serial
-                )
+                wishlist_services.create_wishlist_item(customer=customer, serial=robot_serial)
                 transaction.on_commit(
                     lambda: robots_tasks.send_robot_awainting_restock_email.delay(
                         email=customer.email, serial=robot_serial

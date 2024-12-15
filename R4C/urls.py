@@ -16,13 +16,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from robots.views import GetReportView
-from robots.views import RobotView
+
 from orders.views import OrderView
+from robots.views import GetReportView, RobotView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/robots/', RobotView.as_view()),
-    path('report/', GetReportView.as_view()),
-    path('order/', OrderView.as_view())
+    path("admin/", admin.site.urls),
+    path("api/robots/", RobotView.as_view()),
+    path("report/", GetReportView.as_view()),
+    path("order/", OrderView.as_view()),
 ]
