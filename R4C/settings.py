@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "customers",
     "orders",
     "robots",
+    "wishlist",
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,20 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+# Celery
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+# SMTP
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

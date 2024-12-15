@@ -1,18 +1,39 @@
 import openpyxl
+from django.core.mail import send_mail
+from R4C import settings
 from celery import shared_task
 from datetime import datetime, timedelta
 from django.db.models import Count
 
 from robots.models import Robot
 
-def send_robot_awainting_restock_email():
+
+@shared_task
+def send_robot_awainting_restock_email(email: str, serial: str):
     """Робота нет, но мы отправим сообщение когда появиться"""
-    ...
+    send_mail(
+        "Заказ R4C",
+        f"Ваш заказ на робота {serial} создан, однако его нет в наличии, мы отправим вам сообщение на почту когда он появится!",
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=False,
+    )
 
 
-def send_robot_restock_email():
+@shared_task
+def send_robot_restock_email(email: str, model: str, version: str):
     """Робот появился, отправляем сообщение одному"""
+    message = (
+        "Добрый день!"
+        + f"Недавно вы интересовались нашим роботом модели {model} , версии {version}."
+        + "Этот робот теперь в наличии. Если вам подходит этот вариант - пожалуйста, свяжитесь с нами"
+    )
+
+    send_mail(
+        "Заказ R4C", message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False
+    )
     ...
+
 
 @shared_task
 def create_excel_robot_report(file_name: str) -> None:

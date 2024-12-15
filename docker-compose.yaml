@@ -31,3 +31,18 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025" 
+      - "1025:1025"
+      - "465:465"
+    env_file:
+      - .env
+    volumes:
+      - mailpit_data:/data
+
+
+volumes:
+  mailpit_data:
