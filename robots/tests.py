@@ -1,13 +1,15 @@
 import pytest
 from django.test import Client
-from .services import create_robot
-from .models import Robot
+
 from .forms import RobotCreateForm
+from .models import Robot
+from .services import create_robot
 
 
 @pytest.fixture
 def client():
     return Client()
+
 
 @pytest.mark.django_db
 def test_robot_create_endpoint(client):
@@ -17,7 +19,7 @@ def test_robot_create_endpoint(client):
     response = client.post(url, data, content_type="application/json")
     assert response.status_code == 200
     assert response.json() == {"message": "success"}
-    
+
     data = {"model": "R55", "version": "D4", "created": "2024-12-11 00:00:00"}
 
     response = client.post(url, data, content_type="application/json")
@@ -35,6 +37,7 @@ def test_robot_create_form_validation():
     }
     form = RobotCreateForm(data)
     assert form.is_valid() == False
+
 
 @pytest.mark.django_db
 def test_create_robot():

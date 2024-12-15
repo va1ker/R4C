@@ -1,5 +1,6 @@
 from django import forms
 
+
 class RobotCreateForm(forms.Form):
     model = forms.CharField(max_length=2, required=True)
     version = forms.CharField(max_length=2, required=True)

@@ -1,10 +1,11 @@
-import openpyxl
-from django.core.mail import send_mail
-from R4C import settings
-from celery import shared_task
 from datetime import datetime, timedelta
+
+import openpyxl
+from celery import shared_task
+from django.core.mail import send_mail
 from django.db.models import Count
 
+from R4C import settings
 from robots.models import Robot
 
 
@@ -29,9 +30,7 @@ def send_robot_restock_email(email: str, model: str, version: str):
         + "Этот робот теперь в наличии. Если вам подходит этот вариант - пожалуйста, свяжитесь с нами"
     )
 
-    send_mail(
-        "Заказ R4C", message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False
-    )
+    send_mail("Заказ R4C", message, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
     ...
 
 
