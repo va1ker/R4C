@@ -1,25 +1,33 @@
 from django.views import View
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 import json
 from datetime import datetime
 
 from robots.models import Robot
 
+from robots.forms import RobotCreateForm
+
+from robots import services as robots_services
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class RobotView(View):
     def post(self, request):
-        data = json.loads(request.body.decode("utf-8"))
-        if ("model" and "version" and "created") not in data or len(data["model"])>2 or len(data["version"])>2: #????
-            return JsonResponse({"message": "invalid data"}, status=400)
-        
         try:
-            created = datetime.strptime(data["created"],"%Y-%m-%d %H:%M:%S")
-            if created > datetime.now():
-                return JsonResponse({"message": "incorrect date"}, status=400) ## raise ValueError
-            
-        except ValueError:
-            return JsonResponse({"message": "incorrect date"}, status=400)
-        
-        robot = Robot(serial=data["model"]+"-"+data["version"],model=data["model"],version=data["version"],created=created)
-        robot.save()
-        return JsonResponse({"message":"success"},status=200)
+            data = json.loads(request.body.decode("utf-8"))
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "incorrect data format"}, status=400)
+
+        form = RobotCreateForm(data)
+
+        if form.is_valid():
+            robots_services.create_robot(
+                model=form.cleaned_data["model"],
+                version=form.cleaned_data["version"],
+                created=form.cleaned_data["created"],
+            )
+            return JsonResponse({"message": "success"}, status=200)
+        return JsonResponse({"errors": form.errors}, status=400)
