@@ -1,7 +1,14 @@
-from django.http import FileResponse
-from django.views import View
-from robots.tasks import create_excel_robot_report 
+import json
 
+from django.http import FileResponse, JsonResponse
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+from robots.tasks import create_excel_robot_report 
+from robots.forms import RobotCreateForm
+
+from robots import services as robots_services
 
 class GetReportView(View):
     def get(self, request):
@@ -16,3 +23,22 @@ class GetReportView(View):
         response["Content-Disposition"] = "attachment; filename=robot_report.xlsx"
 
         return response
+
+@method_decorator(csrf_exempt, name="dispatch")
+class RobotView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "incorrect data format"}, status=400)
+
+        form = RobotCreateForm(data)
+
+        if form.is_valid():
+            robots_services.create_robot(
+                model=form.cleaned_data["model"],
+                version=form.cleaned_data["version"],
+                created=form.cleaned_data["created"],
+            )
+            return JsonResponse({"message": "success"}, status=200)
+        return JsonResponse({"errors": form.errors}, status=400)
