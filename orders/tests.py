@@ -1,24 +1,26 @@
 import pytest
 
-from customers.tests import customer_fx  
+from customers.models import Customer
+from customers.tests import customer_fx
+from orders.forms import OrderForm
+from orders.models import Order
+from orders.services import create_order
 
-from .forms import OrderForm
-from .models import Order
-from .services import create_order
 
-
-def test_order_form():
-    data = {"email": "test@email.com", "robot_serial": "R2-D2"}
+@pytest.mark.parametrize(
+    "data, is_valid",
+    [
+        ({"email": "test@email.com", "robot_serial": "R2-D2"}, True),
+        ({"email": "test", "robot_serial": "R2-D2"}, False),  # bad email
+    ],
+)
+def test_order_form(data: dict, is_valid: bool):
     form = OrderForm(data)
-    assert form.is_valid() == True 
-
-    data = {"email": "test", "robot_serial": "R2-D2"}  # bad email
-    form = OrderForm(data)
-    assert form.is_valid() == False  
+    assert form.is_valid() == is_valid
 
 
 @pytest.mark.django_db
-def test_create_order(customer_fx):
+def test_create_order(customer_fx: Customer):
     serial = "R2-D2"
     assert Order.objects.count() == 0
     create_order(customer_fx, serial)
