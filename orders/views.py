@@ -1,5 +1,7 @@
 from django.db import transaction
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
 
 from customers import selectors as customer_selectors
 from orders import services as order_services
@@ -13,7 +15,7 @@ from wishlist import services as wishlist_services
 class OrderView(FormView):
     template_name = "order.html"
     form_class = OrderForm
-    success_url = "/"
+    success_url = reverse_lazy("order_success")
 
     def form_valid(self, form):
         with transaction.atomic():
@@ -33,3 +35,7 @@ class OrderView(FormView):
                 )
 
         return super().form_valid(form)
+
+
+class OrderSuccessView(TemplateView):
+    template_name = "order_success.html"

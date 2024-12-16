@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from orders.views import OrderView
+from orders.views import OrderView, OrderSuccessView
 from robots.views import GetReportView, RobotView
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
     path("api/robots/", RobotView.as_view()),
     path("report/", GetReportView.as_view()),
     path("order/", OrderView.as_view()),
+    path("order_success/", OrderSuccessView.as_view(), name="order_success"),
 ]
