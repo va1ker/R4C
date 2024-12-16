@@ -143,5 +143,5 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 if "test" in sys.argv:
-    from R4C.settings_tests import * #noqa: F403
+    from R4C.settings_tests import *  # noqa: F403
 

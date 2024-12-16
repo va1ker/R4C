@@ -1,7 +1,7 @@
 import pytest
 
-from .models import Customer
-from .selectors import get_or_create_user_by_email
+from customers.models import Customer
+from customers.selectors import get_or_create_user_by_email
 
 
 @pytest.fixture
@@ -13,24 +13,24 @@ def customer_fx():
 
 
 @pytest.mark.django_db
-def test_get_or_create_user_creates_new_customer():
+def test_get_or_create_user_creates__new_customer():
     email = "new_user@example.com"
 
-    assert Customer.objects.filter(email=email).count() == 0
+    assert Customer.objects.count() == 0
 
     customer = get_or_create_user_by_email(email=email)
 
     assert customer.email == email
-    assert Customer.objects.filter(email=email).count() == 1
+    assert Customer.objects.count() == 1
 
 
 @pytest.mark.django_db
-def test_get_or_create_user_returns_existing_customer(customer_fx):
+def test_get_or_create_user_returns__existing_customer(customer_fx: Customer):
     existing_customer = customer_fx
 
-    assert Customer.objects.filter(email=existing_customer.email).count() == 1
+    assert Customer.objects.count() == 1
 
     customer = get_or_create_user_by_email(email=existing_customer.email)
 
     assert customer == existing_customer
-    assert Customer.objects.filter(email=existing_customer.email).count() == 1
+    assert Customer.objects.count() == 1

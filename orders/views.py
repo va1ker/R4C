@@ -1,7 +1,7 @@
 from django.db import transaction
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.urls import reverse_lazy
 
 from customers import selectors as customer_selectors
 from orders import services as order_services

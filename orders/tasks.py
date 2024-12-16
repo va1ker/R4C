@@ -5,7 +5,7 @@ from R4C import settings
 
 
 @shared_task
-def send_order_created_email(email: str, serial: str):
+def send_order_created_email(email: str, serial: str) -> None:
     """Заказ создан"""
     send_mail(
         "Заказ R4C",

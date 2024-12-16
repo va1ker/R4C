@@ -5,4 +5,4 @@ class RobotsConfig(AppConfig):
     name = "robots"
 
     def ready(self):
-        import robots.signals #noqa: F401
+        import robots.signals  # noqa: F401

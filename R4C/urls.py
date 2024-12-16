@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from orders.views import OrderView, OrderSuccessView
+from orders.views import OrderSuccessView, OrderView
 from robots.views import GetReportView, RobotView
 
 urlpatterns = [
